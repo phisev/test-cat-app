@@ -8,26 +8,23 @@ on:
       - released
 
 jobs:
-  deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
-        node-version: [ 12.x ]
+        node-version: [ 18.x ]
 
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v3
 
-      - name: Node installieren
-        uses: actions/setup-node@v1
-        with:
-          node-version: ${{ matrix.node-version }}
-      - run: npm i
-      - run: npm run build
+      - name: Install and Build
+        run:
+          npm i
+          npm run build
 
-      - name: Deploy to GitHub Pages
-        uses: JamesIves/github-pages-deploy-action@4.1.0
+      - name: Deploy
+        uses: JamesIves/github-pages-deploy-action@4
         with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          BRANCH: gh_pages
-          FOLDER: build
+          folder: build
